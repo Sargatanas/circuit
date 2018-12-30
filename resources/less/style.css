@@ -1,0 +1,76 @@
+body {
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  padding: 50px;
+}
+.point-area-element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3px;
+}
+.point-area-element__input {
+  display: none;
+  padding: 0;
+  margin: 0;
+}
+.point-area-element__skin {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: lightgray;
+  cursor: pointer;
+}
+.point-area-element__input:checked + .point-area-element__skin {
+  background: #a2b7d3;
+}
+.point-area-element__skin[data-status="begin"],
+.point-area-element__input:checked + .point-area-element__skin[data-status="begin"] {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+}
+.point-area-element__skin[data-status="begin"][data-orientation="right"],
+.point-area-element__input:checked + .point-area-element__skin_right[data-status="begin"][data-orientation="right"] {
+  background-image: url("/resources/images/arrow-right.jpg");
+}
+.point-area-element__skin[data-status="begin"][data-orientation="bottom"],
+.point-area-element__input:checked + .point-area-element__skin_bottom[data-status="begin"][data-orientation="bottom"] {
+  background-image: url("/resources/images/arrow-bottom.jpg");
+}
+.point-area-element__skin[data-status="begin"][data-orientation="left"],
+.point-area-element__input:checked + .point-area-element__skin_left[data-status="begin"][data-orientation="left"] {
+  background-image: url("/resources/images/arrow-left.jpg");
+}
+.point-area-element__skin[data-status="begin"][data-orientation="top"],
+.point-area-element__input:checked + .point-area-element__skin_top[data-status="begin"][data-orientation="top"] {
+  background-image: url("/resources/images/arrow-top.jpg");
+}
+.point-area-element__connection {
+  background: transparent;
+}
+.point-area-element__connection[data-status="on"] {
+  background: lightgray;
+}
+.point-area-element__connection[data-status="active"] {
+  background: #00d3b8;
+}
+.point-area-element__connection_string {
+  width: 30px;
+  height: 10px;
+}
+.point-area-element__connection_column {
+  width: 10px;
+  height: 30px;
+  margin: auto;
+}
+.properties {
+  margin-right: 50px;
+}
+.properties-element {
+  margin-bottom: 10px;
+}
+.properties-element:last-child {
+  margin-bottom: 0;
+}

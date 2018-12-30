@@ -1,0 +1,77 @@
+.point-area-element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 3px;
+
+  &__input {
+    display: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__skin {
+    width: 16px;
+    height: 16px;
+
+    border-radius: 50%;
+    background: lightgray;
+
+    cursor: pointer;
+
+    .point-area-element__input:checked + & {
+      background: #a2b7d3;
+    }
+
+    &[data-status="begin"],
+    .point-area-element__input:checked + &[data-status="begin"] {
+      background-color: transparent;
+      background-repeat: no-repeat;
+      background-size: 100% auto;
+    }
+
+    &[data-status="begin"][data-orientation="right"],
+    .point-area-element__input:checked + &_right[data-status="begin"][data-orientation="right"] {
+      background-image: url("/resources/images/arrow-right.jpg");
+    }
+
+    &[data-status="begin"][data-orientation="bottom"],
+    .point-area-element__input:checked + &_bottom[data-status="begin"][data-orientation="bottom"] {
+      background-image: url("/resources/images/arrow-bottom.jpg");
+    }
+
+    &[data-status="begin"][data-orientation="left"],
+    .point-area-element__input:checked + &_left[data-status="begin"][data-orientation="left"] {
+      background-image: url("/resources/images/arrow-left.jpg");
+    }
+
+    &[data-status="begin"][data-orientation="top"],
+    .point-area-element__input:checked + &_top[data-status="begin"][data-orientation="top"] {
+      background-image: url("/resources/images/arrow-top.jpg");
+    }
+  }
+
+  &__connection {
+    background: transparent;
+
+    &[data-status="on"] {
+      background: lightgray;
+    }
+
+    &[data-status="active"] {
+      background: #00d3b8;
+    }
+
+    &_string {
+      width: 30px;
+      height: 10px;
+    }
+
+    &_column {
+      width: 10px;
+      height: 30px;
+      margin: auto;
+    }
+  }
+}

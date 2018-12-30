@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+.point-area {
+  padding: 100px;
+}
+.point-area-element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.point-area-element__input {
+  padding: 0;
+  margin: 0;
+}
+.point-area-element__row-space {
+  width: 30px;
+  height: 8px;
+}
+.point-area-element__row-space_active {
+  background: #3b60cd;
+}
