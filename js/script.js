@@ -5,9 +5,9 @@
     let circuitChoosingBegin = document.getElementById('circuit-choosing-begin');
 
     let circuitBegin = null;
-    let circuitEnd = null;
 
     // манипуляция фрагментами цепи
+
     let circuitElements = new Set();
     let points = Array.from(document.getElementsByClassName('point-area-element__input'));
 
@@ -41,7 +41,6 @@
                     switch (orientation) {
                         case '':
                             orientation = 'right';
-                            circuitEnd =
                             break;
                         case 'right':
                             orientation = 'bottom';
@@ -122,70 +121,157 @@
             let string = Number(element.dataset.string);
             let column = Number(element.dataset.column);
 
+            let firstLink = null;
+            let lastLink = null;
+            let siblingsLinks = [];
+            let siblings = [];
+            let previous = null;
+
             switch (element.dataset.orientation) {
                 case 'right':
-                    temp = getConnectionElement(string, string, column, column + 1);
-                    hasActiveBegin = circuitElements.has(temp);
+                    firstLink = getConnectionElement(string, string, column, column + 1);
+
+                    lastLink = getConnectionElement(string, string, column, column - 1);
+                    if (circuitElements.has(lastLink)) {
+                        previous = lastLink;
+                    }
+
+                    siblingsLinks.push(getConnectionElement(string, string + 1, column, column));
+                    siblingsLinks.push(getConnectionElement(string, string - 1, column, column));
+                    for (let siblingLink of siblingsLinks) {
+                        if (circuitElements.has(siblingLink)) {
+                            siblings.push(siblingLink);
+                        }
+                    }
+
+                    hasActiveBegin = circuitElements.has(firstLink);
                     break;
                 case 'bottom':
-                    temp = getConnectionElement(string, string + 1, column, column);
-                    hasActiveBegin = circuitElements.has(temp);
+                    firstLink = getConnectionElement(string, string + 1, column, column);
+
+                    lastLink = getConnectionElement(string, string - 1, column, column);
+                    if (circuitElements.has(lastLink)) {
+                        previous = lastLink;
+                    }
+
+                    siblingsLinks.push(getConnectionElement(string, string, column, column + 1));
+                    siblingsLinks.push(getConnectionElement(string, string, column, column - 1));
+                    for (let siblingLink of siblingsLinks) {
+                        if (circuitElements.has(siblingLink)) {
+                            siblings.push(siblingLink);
+                        }
+                    }
+
+                    hasActiveBegin = circuitElements.has(firstLink);
                     break;
                 case 'left':
-                    temp = getConnectionElement(string, string, column, column - 1);
-                    hasActiveBegin = circuitElements.has(temp);
+                    firstLink = getConnectionElement(string, string, column, column - 1);
+
+                    lastLink = getConnectionElement(string, string, column, column + 1);
+                    if (circuitElements.has(lastLink)) {
+                        previous = lastLink;
+                    }
+
+                    siblingsLinks.push(getConnectionElement(string, string + 1, column, column));
+                    siblingsLinks.push(getConnectionElement(string, string - 1, column, column));
+                    for (let siblingLink of siblingsLinks) {
+                        if (circuitElements.has(siblingLink)) {
+                            siblings.push(siblingLink);
+                        }
+                    }
+
+                    hasActiveBegin = circuitElements.has(firstLink);
                     break;
                 case 'top':
-                    temp = getConnectionElement(string, string - 1, column, column);
-                    hasActiveBegin = circuitElements.has(temp);
+                    firstLink = getConnectionElement(string, string - 1, column, column);
+
+                    lastLink = getConnectionElement(string, string + 1, column, column);
+                    if (circuitElements.has(lastLink)) {
+                        previous = lastLink;
+                    }
+
+                    siblingsLinks.push(getConnectionElement(string, string, column, column + 1));
+                    siblingsLinks.push(getConnectionElement(string, string, column, column - 1));
+                    for (let siblingLink of siblingsLinks) {
+                        if (circuitElements.has(siblingLink)) {
+                            siblings.push(siblingLink);
+                        }
+                    }
+
+                    hasActiveBegin = circuitElements.has(firstLink);
                     break;
             }
 
             if (hasActiveBegin) {
                 temp = {
-                    current: temp,
-                    previous: null,
-                    next: []
+                    current: firstLink,
+                    previous: previous,
+                    next: [],
+                    siblings: siblings
                 };
                 circuitWorking.push(temp);
             }
 
             circuitWorking.forEach(function (circuitWorkingElement) {
-                createTree(circuitElements, circuitWorkingElement);
+                createTree(circuitElements, circuitWorkingElement, lastLink, siblingsLinks);
             });
             console.log(circuitWorking);
         }
     });
 
-    function createTree(circuitElements, element) {
+    function createTree(circuitElements, element, lastLink, siblingsLinks) {
         let temp = null;
+        let neighbors = [];
 
         for(let circuitElement of circuitElements) {
-            if ((circuitElement !== element.current) && (circuitElement !== element.previous)) {
+            if (circuitElement !== element.current) {
                 if ((element.current.dataset.stringTo === circuitElement.dataset.stringFrom) &&
                     (element.current.dataset.columnTo === circuitElement.dataset.columnFrom) ||
+
                     (element.current.dataset.stringFrom === circuitElement.dataset.stringTo) &&
-                    (element.current.dataset.columnFrom === circuitElement.dataset.columnTo)) {
-                    temp = {
-                        current: circuitElement,
-                        previous: element.current,
-                        next: []
-                    };
-                    element.next.push(temp);
+                    (element.current.dataset.columnFrom === circuitElement.dataset.columnTo) ||
+
+                    (element.current.dataset.stringTo === circuitElement.dataset.stringTo) &&
+                    (element.current.dataset.columnTo === circuitElement.dataset.columnTo) ||
+
+                    (element.current.dataset.stringFrom === circuitElement.dataset.stringFrom) &&
+                    (element.current.dataset.columnFrom === circuitElement.dataset.columnFrom)) {
+                    neighbors.push(circuitElement);
                 }
             }
         }
 
-        if ()
-
-        if (element.next) {
-            element.next.forEach(function (element) {
-                createTree(circuitElements, element);
-            })
-            ;
-        } else {
-            return null;
+        let siblings = [];
+        for (let neighbor of neighbors) {
+            if ((neighbor !== element.previous) && (element.siblings.indexOf(neighbor, 0)) === -1) {
+                siblings.push(neighbor);
+                temp = {
+                    current: neighbor,
+                    previous: element.current,
+                    next: [],
+                    siblings: []
+                };
+                element.next.push(temp);
+            }
         }
+        for (let nextElement of element.next) {
+            for (let sibling of siblings) {
+                if (sibling !== nextElement.current) {
+                    nextElement.siblings.push(sibling);
+                }
+            }
+        }
+
+
+        // рассмотрим каждый из следующих элементов
+        element.next.forEach(function (nextElement) {
+            if ((nextElement.current !== lastLink) && (siblingsLinks.indexOf(nextElement.current, 0) === -1)) {
+                console.log('yes');
+                createTree(circuitElements, nextElement, lastLink, siblingsLinks);
+            } else {
+                return null;
+            }
+        });
     }
 })();
 
