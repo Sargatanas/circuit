@@ -220,6 +220,10 @@
             circuitWorking.forEach(function (circuitWorkingElement) {
                 markTree(circuitWorkingElement);
             });
+
+            circuitWorking.forEach(function (circuitWorkingElement) {
+                clearTree(circuitWorking, circuitWorkingElement);
+            });
             console.log(circuitWorking);
         }
     });
@@ -269,6 +273,9 @@
                     nextElement.siblings.push(sibling);
                 }
             }
+            for (let sibling of element.siblings) {
+                nextElement.siblings.push(sibling);
+            }
         }
 
         if (element.next.length !== 0) {
@@ -307,6 +314,22 @@
             });
             element.status = status;
         } else {
+            return null;
+        }
+    }
+
+
+    // зачищаем глухие ветки
+    function clearTree(tree, element) {
+        if (element.status) {
+            element.current.dataset.status = 'active';
+            if (element.next !== 0) {
+                element.next.forEach(function (nextElement) {
+                    clearTree(element.next, nextElement);
+                });
+            }
+        } else {
+            tree.splice(tree.indexOf(element), 1);
             return null;
         }
     }
