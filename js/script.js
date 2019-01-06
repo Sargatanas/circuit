@@ -207,7 +207,8 @@
                     current: firstLink,
                     previous: previous,
                     next: [],
-                    siblings: siblings
+                    siblings: siblings,
+                    status: null
                 };
                 circuitWorking.push(temp);
             }
@@ -215,10 +216,17 @@
             circuitWorking.forEach(function (circuitWorkingElement) {
                 createTree(circuitElements, circuitWorkingElement, lastLink, siblingsLinks);
             });
+
+            circuitWorking.forEach(function (circuitWorkingElement) {
+                markTree(circuitWorkingElement);
+            });
             console.log(circuitWorking);
         }
     });
 
+
+
+    // выстраиваем дерево с маркировкой концевых точек
     function createTree(circuitElements, element, lastLink, siblingsLinks) {
         let temp = null;
         let neighbors = [];
@@ -249,7 +257,8 @@
                     current: neighbor,
                     previous: element.current,
                     next: [],
-                    siblings: []
+                    siblings: [],
+                    status: null
                 };
                 element.next.push(temp);
             }
@@ -262,16 +271,44 @@
             }
         }
 
+        if (element.next.length !== 0) {
+            element.next.forEach(function (nextElement) {
+                if (siblingsLinks.indexOf(nextElement.current, 0) === -1) {
+                    if (nextElement.current !== lastLink) {
+                        createTree(circuitElements, nextElement, lastLink, siblingsLinks);
+                    } else {
+                        nextElement.status = true;
+                        return null;
+                    }
+                } else {
+                    nextElement.status = false;
+                    return null;
+                }
+            });
+        } else {
+            element.status = false;
+            return null;
+        }
+    }
 
-        // рассмотрим каждый из следующих элементов
-        element.next.forEach(function (nextElement) {
-            if ((nextElement.current !== lastLink) && (siblingsLinks.indexOf(nextElement.current, 0) === -1)) {
-                console.log('yes');
-                createTree(circuitElements, nextElement, lastLink, siblingsLinks);
-            } else {
-                return null;
-            }
-        });
+
+
+    // маркируем каждое звено дерева в зависимости от маркеров его потомков
+    function markTree(element) {
+        if (element.status === null) {
+            let status = false;
+            element.next.forEach(function (nextElement) {
+                if (nextElement.status === null) {
+                    markTree(nextElement);
+                    status = status || nextElement.status;
+                } else {
+                    status = status || nextElement.status;
+                }
+            });
+            element.status = status;
+        } else {
+            return null;
+        }
     }
 })();
 
